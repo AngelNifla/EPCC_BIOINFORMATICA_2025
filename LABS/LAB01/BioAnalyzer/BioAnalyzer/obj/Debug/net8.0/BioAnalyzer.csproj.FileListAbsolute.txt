@@ -1,0 +1,15 @@
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\obj\Debug\net8.0\BioAnalyzer.GeneratedMSBuildEditorConfig.editorconfig
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\obj\Debug\net8.0\BioAnalyzer.AssemblyInfoInputs.cache
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\obj\Debug\net8.0\BioAnalyzer.AssemblyInfo.cs
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\obj\Debug\net8.0\BioAnalyzer.csproj.CoreCompileInputs.cache
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\bin\Debug\net8.0\BioAnalyzer.exe
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\bin\Debug\net8.0\BioAnalyzer.deps.json
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\bin\Debug\net8.0\BioAnalyzer.runtimeconfig.json
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\bin\Debug\net8.0\BioAnalyzer.dll
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\bin\Debug\net8.0\BioAnalyzer.pdb
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\obj\Debug\net8.0\BioAnalyzer.dll
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\obj\Debug\net8.0\refint\BioAnalyzer.dll
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\obj\Debug\net8.0\BioAnalyzer.pdb
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\obj\Debug\net8.0\BioAnalyzer.genruntimeconfig.cache
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\obj\Debug\net8.0\ref\BioAnalyzer.dll
+E:\C++ VS\2025\BioAnalyzer\BioAnalyzer\bin\Debug\net8.0\Datos\fastaP.txt
