@@ -1,0 +1,39 @@
+--------------------------SECUENCIAS--------------------------
+Secuencia 1: AAAC
+Secuencia 2: AGC
+
+
+--------------------------PENALIDADES--------------------------
+Parámetros:
+  match: 1
+  mismatch: -1
+  Gap: -2
+
+
+--------------------------MATRIZ--------------------------
+
+             A   G   C
+          ----------------
+      |   0  -2  -4  -6
+     A|  -2   1  -1  -3
+     A|  -4  -1   0  -2
+     A|  -6  -3  -2  -1
+     C|  -8  -5  -4  -1
+
+Score final: -1
+--------------------------ALINEAMIENTOS--------------------------
+
+Alineamientos Encontrados: 3
+
+Alineamiento #1:
+	AAAC
+	-AGC
+
+Alineamiento #2:
+	AAAC
+	A-GC
+
+Alineamiento #3:
+	AAAC
+	AG-C
+
