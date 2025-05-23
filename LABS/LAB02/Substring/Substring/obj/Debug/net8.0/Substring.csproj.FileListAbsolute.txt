@@ -1,0 +1,14 @@
+E:\C++ VS\2025\Substring\Substring\bin\Debug\net8.0\Substring.exe
+E:\C++ VS\2025\Substring\Substring\bin\Debug\net8.0\Substring.deps.json
+E:\C++ VS\2025\Substring\Substring\bin\Debug\net8.0\Substring.runtimeconfig.json
+E:\C++ VS\2025\Substring\Substring\bin\Debug\net8.0\Substring.dll
+E:\C++ VS\2025\Substring\Substring\bin\Debug\net8.0\Substring.pdb
+E:\C++ VS\2025\Substring\Substring\obj\Debug\net8.0\Substring.GeneratedMSBuildEditorConfig.editorconfig
+E:\C++ VS\2025\Substring\Substring\obj\Debug\net8.0\Substring.AssemblyInfoInputs.cache
+E:\C++ VS\2025\Substring\Substring\obj\Debug\net8.0\Substring.AssemblyInfo.cs
+E:\C++ VS\2025\Substring\Substring\obj\Debug\net8.0\Substring.csproj.CoreCompileInputs.cache
+E:\C++ VS\2025\Substring\Substring\obj\Debug\net8.0\Substring.dll
+E:\C++ VS\2025\Substring\Substring\obj\Debug\net8.0\refint\Substring.dll
+E:\C++ VS\2025\Substring\Substring\obj\Debug\net8.0\Substring.pdb
+E:\C++ VS\2025\Substring\Substring\obj\Debug\net8.0\Substring.genruntimeconfig.cache
+E:\C++ VS\2025\Substring\Substring\obj\Debug\net8.0\ref\Substring.dll
