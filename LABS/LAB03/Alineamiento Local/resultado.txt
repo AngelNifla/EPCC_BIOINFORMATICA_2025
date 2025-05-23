@@ -1,0 +1,29 @@
+--------------------------SECUENCIAS--------------------------
+Secuencia 1: AGCT
+Secuencia 2: GCA
+
+
+--------------------------PENALIDADES--------------------------
+Parámetros:
+  match: 1
+  mismatch: -1
+  Gap: -2
+
+
+--------------------------DATOS HALLADOS--------------------------
+(i) Valor maximo de alineamiento: 2
+(ii) Subcadena alineada comun: GC
+(iii) Posicion en secuencia 1: 2
+      Posicion en secuencia 2: 1
+
+--------------------------MATRIZ--------------------------
+
+ G  C  A 
+  +------------
+- | 0  0  0  0 
+A | 0  0  0  1 
+G | 0  1  0  0 
+C | 0  0  2  0 
+T | 0  0  0  1 
+
+(v) Existe otra subsecuencia Optima? No
