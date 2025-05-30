@@ -1,0 +1,32 @@
+Matriz de scores par-a-par:
+
+     | S1 | S2 | S3 | S4 | S5 | Total
+-------------------------------------------
+ S1 |   0 |   7 |  -2 |   0 |  -3 |     2
+ S2 |   7 |   0 |  -2 |   0 |  -4 |     1
+ S3 |  -2 |  -2 |   0 |   0 |  -7 |   -11
+ S4 |   0 |   0 |   0 |   0 |  -3 |    -3
+ S5 |  -3 |  -4 |  -7 |  -3 |   0 |   -17
+-------------------------------------------
+Total|   2 |   1 | -11 |  -3 | -17 |
+
+Alineamientos individuales con la secuencia centro (Secuencia 1):
+Secuencia 1: ATTGCCATT
+Secuencia 2: ATGGCCATT-----------------------------
+Secuencia 3: A-TCCAATTTT------------------
+Secuencia 4: ATCTTC-TT---------
+Secuencia 5: ACTG--ACC
+
+Alineamiento multiple final:
+ATTGCCATT
+ATGGCCATT-----------------------------
+A-TCCAATTTT------------------
+ATCTTC-TT---------
+ACTG--ACC
+
+Alineamiento múltiple final (formato tabular):
+S1 | A T T G C C A T T 
+S2 | A T G G C C A T T - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+S3 | A - T C C A A T T T T - - - - - - - - - - - - - - - - - - 
+S4 | A T C T T C - T T - - - - - - - - - 
+S5 | A C T G - - A C C 
