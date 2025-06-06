@@ -1,169 +1,152 @@
+// alineamiento_estrella.cpp
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
-#include <fstream>
 #include <algorithm>
+#include <numeric>
 #include <omp.h>
-#include <tuple>
-#include <iomanip>
 
 using namespace std;
 
-// Funcion Needleman-Wunsch para dos secuencias
-tuple<int, string, string> alineamiento_dos(const string& s1, const string& s2, int match, int mismatch, int gap) {
-    int n = s1.size(), m = s2.size();
-    vector<vector<int>> matriz(n+1, vector<int>(m+1));
-    
-    // Inicializacion
-    for (int i = 0; i <= n; ++i) matriz[i][0] = i * gap;
-    for (int j = 0; j <= m; ++j) matriz[0][j] = j * gap;
+int match_score, mismatch_penalty, gap_penalty;
 
-    // Llenar matriz
+int puntuacion(const char &a, const char &b) {
+    return a == b ? match_score : mismatch_penalty;
+}
+
+pair<int, vector<vector<int>>> alineamientoGlobal(const string &s1, const string &s2, string &res1, string &res2) {
+    int n = s1.size();
+    int m = s2.size();
+    vector<vector<int>> matriz(n + 1, vector<int>(m + 1, 0));
+
+    for (int i = 0; i <= n; ++i) matriz[i][0] = i * gap_penalty;
+    for (int j = 0; j <= m; ++j) matriz[0][j] = j * gap_penalty;
+
     for (int i = 1; i <= n; ++i) {
         for (int j = 1; j <= m; ++j) {
-            int diag = matriz[i-1][j-1] + (s1[i-1] == s2[j-1] ? match : mismatch);
-            int up = matriz[i-1][j] + gap;
-            int left = matriz[i][j-1] + gap;
-            matriz[i][j] = max({diag, up, left});
+            int diag = matriz[i - 1][j - 1] + puntuacion(s1[i - 1], s2[j - 1]);
+            int arriba = matriz[i - 1][j] + gap_penalty;
+            int izq = matriz[i][j - 1] + gap_penalty;
+            matriz[i][j] = max({diag, arriba, izq});
         }
     }
 
-    // Trazado hacia atras
-    string al1, al2;
+    // Trazado inverso
     int i = n, j = m;
+    res1 = ""; res2 = "";
     while (i > 0 || j > 0) {
-        if (i > 0 && j > 0 && matriz[i][j] == matriz[i-1][j-1] + (s1[i-1] == s2[j-1] ? match : mismatch)) {
-            al1 = s1[i-1] + al1;
-            al2 = s2[j-1] + al2;
-            --i; --j;
-        } else if (i > 0 && matriz[i][j] == matriz[i-1][j] + gap) {
-            al1 = s1[i-1] + al1;
-            al2 = '-' + al2;
-            --i;
+        if (i > 0 && j > 0 && matriz[i][j] == matriz[i - 1][j - 1] + puntuacion(s1[i - 1], s2[j - 1])) {
+            res1 = s1[i - 1] + res1;
+            res2 = s2[j - 1] + res2;
+            i--; j--;
+        } else if (i > 0 && matriz[i][j] == matriz[i - 1][j] + gap_penalty) {
+            res1 = s1[i - 1] + res1;
+            res2 = '-' + res2;
+            i--;
         } else {
-            al1 = '-' + al1;
-            al2 = s2[j-1] + al2;
-            --j;
+            res1 = '-' + res1;
+            res2 = s2[j - 1] + res2;
+            j--;
         }
     }
-    return {matriz[n][m], al1, al2};
+
+    return {matriz[n][m], matriz};
 }
 
 int main() {
-    int num_secuencias, match, mismatch, gap;
-    cout << "Numero de secuencias: ";
-    cin >> num_secuencias;
-    vector<string> secuencias(num_secuencias);
-    for (int i = 0; i < num_secuencias; ++i) {
-        cout << "Secuencia " << i+1 << ": ";
-        cin >> secuencias[i];
+    int n;
+    cout << "Ingrese el número de secuencias: ";
+    cin >> n;
+    cin.ignore();
+
+    vector<string> secuencias(n);
+    for (int i = 0; i < n; ++i) {
+        cout << "Ingrese la secuencia S" << i + 1 << ": ";
+        getline(cin, secuencias[i]);
     }
-    cout << "Match: "; cin >> match;
-    cout << "Mismatch: "; cin >> mismatch;
-    cout << "Gap: "; cin >> gap;
 
-    vector<vector<int>> score(num_secuencias, vector<int>(num_secuencias));
+    cout << "Ingrese el puntaje de coincidencia (match): ";
+    cin >> match_score;
+    cout << "Ingrese la penalidad por no coincidencia (mismatch): ";
+    cin >> mismatch_penalty;
+    cout << "Ingrese la penalidad por gap: ";
+    cin >> gap_penalty;
 
-    // Calcular matriz de score par-a-par
+    vector<vector<int>> matrizPuntajes(n, vector<int>(n, 0));
+    vector<int> totales(n, 0);
+
     #pragma omp parallel for collapse(2)
-    for (int i = 0; i < num_secuencias; ++i) {
-        for (int j = i+1; j < num_secuencias; ++j) {
-            auto [s, _, __] = alineamiento_dos(secuencias[i], secuencias[j], match, mismatch, gap);
-            score[i][j] = score[j][i] = s;
-        }
-    }
-
-    // Determinar secuencia centro
-    int mejor_total = -1, centro = -1;
-    for (int i = 0; i < num_secuencias; ++i) {
-        int suma = 0;
-        for (int j = 0; j < num_secuencias; ++j) suma += score[i][j];
-        if (suma > mejor_total) {
-            mejor_total = suma;
-            centro = i;
-        }
-    }
-
-    vector<string> alineadas(num_secuencias);
-    alineadas[centro] = secuencias[centro];
-
-    // Alinear cada secuencia con la del centro
-    for (int i = 0; i < num_secuencias; ++i) {
-        if (i == centro) continue;
-        auto [_, al_centro, al_i] = alineamiento_dos(secuencias[centro], secuencias[i], match, mismatch, gap);
-        // Sincronizar gaps
-        string nueva_centro, nueva_i;
-        int idx = 0;
-        for (int k = 0; k < al_centro.size(); ++k) {
-            for (int j = 0; j < alineadas.size(); ++j) {
-                if (alineadas[j].size() < k) alineadas[j] += '-';
-            }
-            for (int j = 0; j < alineadas.size(); ++j) {
-                if (j == centro) continue;
-                alineadas[j].push_back('-');
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i != j) {
+                string temp1, temp2;
+                int score = alineamientoGlobal(secuencias[i], secuencias[j], temp1, temp2).first;
+                matrizPuntajes[i][j] = score;
+                #pragma omp atomic
+                totales[i] += score;
             }
         }
-        alineadas[i] = al_i;
-        alineadas[centro] = al_centro;
     }
 
-    // Escribir salida
-    ofstream salida("alineamiento_estrella.txt");
+    int idx_estrella = max_element(totales.begin(), totales.end()) - totales.begin();
+    string secuencia_estrella = secuencias[idx_estrella];
 
-    // Matriz de scores con encabezado y sumatorias
-    salida << "Matriz de scores par-a-par:\n\n";
+    vector<string> alineadas(n);
+    vector<string> alineadas_con_estrella(n);
+    alineadas[idx_estrella] = secuencia_estrella;
 
-    // Imprimir encabezado de columnas
-    salida << "     |";
-    for (int j = 0; j < num_secuencias; ++j)
-        salida << " S" << j+1 << " |";
-    salida << " Total\n";
-
-    // Línea separadora
-    salida << string(6 + (num_secuencias * 6) + 7, '-') << "\n";
-
-    // Variables para suma de columnas
-    vector<int> suma_col(num_secuencias, 0);
-
-    // Imprimir filas con suma por fila
-    for (int i = 0; i < num_secuencias; ++i) {
-        salida << " S" << i+1 << " |";
-        int suma_fila = 0;
-        for (int j = 0; j < num_secuencias; ++j) {
-            salida << " " << setw(3) << score[i][j] << " |";
-            suma_fila += score[i][j];
-            suma_col[j] += score[i][j];
+    #pragma omp parallel for
+    for (int i = 0; i < n; ++i) {
+        if (i != idx_estrella) {
+            string s1, s2;
+            alineamientoGlobal(secuencia_estrella, secuencias[i], s1, s2);
+            alineadas_con_estrella[i] = "S" + to_string(idx_estrella + 1) + " vs S" + to_string(i + 1) + ":\n" + s1 + "\n" + s2 + "\n";
+            alineadas[i] = s2;
+            alineadas[idx_estrella] = s1;
         }
-        salida << " " << setw(5) << suma_fila << "\n";
     }
 
-    // Línea separadora inferior
-    salida << string(6 + (num_secuencias * 6) + 7, '-') << "\n";
-
-    // Imprimir suma por columnas
-    salida << "Total|";
-    for (int j = 0; j < num_secuencias; ++j)
-        salida << " " << setw(3) << suma_col[j] << " |";
-    salida << "\n";
-    salida << "\nAlineamientos individuales con la secuencia centro (Secuencia " << centro+1 << "):\n";
-    for (int i = 0; i < num_secuencias; ++i) {
-        salida << "Secuencia " << i+1 << ": " << alineadas[i] << "\n";
+    ofstream out("alineamiento_estrella.txt");
+    out << "Secuencias:\n";
+    for (int i = 0; i < n; ++i) out << "S" << i + 1 << " : " << secuencias[i] << "\n";
+    out << "\nMatriz de scores par-a-par:\n\n     ";
+    for (int i = 0; i < n; ++i) out << " S" << i + 1 << " ";
+    out << " Total\n-------------------------------------------\n";
+    for (int i = 0; i < n; ++i) {
+        out << "S" << i + 1 << " |";
+        for (int j = 0; j < n; ++j)
+            out << (i == j ? "  0" : (matrizPuntajes[i][j] >= 0 ? "  " : " ")) << matrizPuntajes[i][j] << " |";
+        out << "  " << totales[i] << "\n";
     }
+    out << "-------------------------------------------\nTotal|";
+    for (int t : totales) out << (t >= 0 ? "  " : " ") << t << " |";
+    out << "  " << accumulate(totales.begin(), totales.end(), 0) << "\n\n";
 
-    salida << "\nAlineamiento multiple final:\n";
-    for (auto& a : alineadas)
-        salida << a << "\n";
-
-    salida << "\nAlineamiento múltiple final (formato tabular):\n";
-    
-    for (int i = 0; i < num_secuencias; ++i) {
-        salida << "S" << i + 1 << " | ";
-        for (char c : alineadas[i]) {
-            salida << c << " ";
+    out << "Alineamientos con la estrella (S" << idx_estrella + 1 << "):\n\n";
+    for (int i = 0; i < n; ++i) {
+        if (i != idx_estrella) {
+            out << alineadas_con_estrella[i] << "\n";
         }
-        salida << "\n";
     }
-    salida.close();
-    cout << "\nAlineamiento estrella guardado en 'alineamiento_estrella.txt'.\n";
+
+    // Ajustar longitudes con gaps al final para consistencia
+    size_t max_len = 0;
+    for (const auto &seq : alineadas) max_len = max(max_len, seq.size());
+
+    for (auto &seq : alineadas)
+        while (seq.size() < max_len)
+            seq += '-';
+
+    // Escribir alineamiento múltiple con formato estilo tabla
+    out << "Alineamiento múltiple:\n";
+    for (int i = 0; i < n; ++i) {
+        out << "S" << i + 1 << " | ";
+        for (char c : alineadas[i]) out << c << ' ';
+        out << '\n';
+    }
+
+    out.close();
+    cout << "Archivo 'alineamiento_estrella.txt' generado correctamente.\n";
     return 0;
 }
